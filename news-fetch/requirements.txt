@@ -1,0 +1,15 @@
+Flask==3.0.0
+flask-cors==4.0.0
+APScheduler==3.10.4
+
+requests==2.32.3
+beautifulsoup4==4.12.3
+feedparser==6.0.10
+
+newspaper3k==0.2.8
+lxml
+lxml_html_clean
+nltk
+
+tqdm
+python-dateutil

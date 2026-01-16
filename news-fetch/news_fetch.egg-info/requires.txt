@@ -1,0 +1,8 @@
+beautifulsoup4
+selenium
+requests
+newspaper3k
+news-please
+Unidecode
+twine
+setuptools

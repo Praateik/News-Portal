@@ -1,0 +1,17 @@
+LICENSE
+README.md
+setup.cfg
+setup.py
+news_fetch.egg-info/PKG-INFO
+news_fetch.egg-info/SOURCES.txt
+news_fetch.egg-info/dependency_links.txt
+news_fetch.egg-info/requires.txt
+news_fetch.egg-info/top_level.txt
+newsfetch/__init__.py
+newsfetch/google.py
+newsfetch/helpers.py
+newsfetch/news.py
+newsfetch/news_please_handler.py
+newsfetch/newspaper_handler.py
+newsfetch/soup_handler.py
+newsfetch/example/__init__.py
