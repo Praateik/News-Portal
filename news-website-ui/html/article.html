@@ -3,50 +3,35 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="apple-touch-icon" sizes="57x57" href="../favicon/apple-icon-57x57.png" />
-    <link rel="apple-touch-icon" sizes="60x60" href="../favicon/apple-icon-60x60.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="../favicon/apple-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="76x76" href="../favicon/apple-icon-76x76.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="../favicon/apple-icon-114x114.png" />
-    <link rel="apple-touch-icon" sizes="120x120" href="../favicon/apple-icon-120x120.png" />
-    <link rel="apple-touch-icon" sizes="144x144" href="../favicon/apple-icon-144x144.png" />
-    <link rel="apple-touch-icon" sizes="152x152" href="../favicon/apple-icon-152x152.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="../favicon/apple-icon-180x180.png" />
-    <link rel="icon" type="image/png" sizes="192x192" href="../favicon/android-icon-192x192.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="../favicon/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="96x96" href="../favicon/favicon-96x96.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="../favicon/favicon-16x16.png" />
-    <link rel="manifest" href="../favicon/manifest.json" />
-    <meta name="msapplication-TileColor" content="#ffffff" />
-    <meta name="msapplication-TileImage" content="../favicon/ms-icon-144x144.png" />
-    <meta name="theme-color" content="#ffffff" />
-    <title>Nepal Times | Article</title>
-    <script src="https://kit.fontawesome.com/eaa4609b2f.js" crossorigin="anonymous"></script>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <title>NewsGrid | Article</title>
+
+    <link rel="icon" type="image/png" href="../favicon/WhatsApp_Image_2026-01-08_at_21.56.56-removebg-preview.png" />
+
+    <script src="https://kit.fontawesome.com/eaa4609b2f.js" crossorigin="anonymous" defer></script>
     <link rel="stylesheet" href="../css/style.css" />
-    <script src="https://js.puter.com/v2/"></script>
+    
+    <!-- Performance optimization: Preconnect to API server -->
+    <link rel="preconnect" href="http://127.0.0.1:5000" />
+    <link rel="preconnect" href="https://r.jina.ai" />
 </head>
 
 <body>
+
+    <!-- PRELOADER -->
     <div class="preloader">
         <div></div>
-        <div>Loading Article!</div>
+        <div>Loading article...</div>
     </div>
 
+    <!-- NAV -->
     <nav>
         <div class="container">
             <div class="logo">
                 <i class="fas fa-globe fa-3x"></i>
-                <h1><a href="../index.html" style="text-decoration: none; color: inherit;">Nepal<span>Times</span></a>
-                </h1>
-            </div>
-
-            <div class="social">
-                <a href="https://web.facebook.com/" target="_blank"><i class="fab fa-facebook fa-2x"></i></a>
-                <a href="https://www.twitter.com/" target="_blank"><i class="fab fa-twitter fa-2x"></i></a>
-                <a href="https://www.instagram.com/" target="_blank"><i class="fab fa-instagram fa-2x"></i></a>
-                <a href="https://www.youtube.com/" target="_blank"><i class="fab fa-youtube fa-2x"></i></a>
+                <h1>News<span>Grid</span></h1>
             </div>
 
             <div class="options">
@@ -56,103 +41,64 @@
         </div>
     </nav>
 
-    <div class="container">
-        <section class="article-page">
-            <article id="article-content">
-                <div id="article-image-container">
-                    <img id="article-image" src="../images/articles/ent1.jpg" alt="" />
-                    <div id="image-loader" style="display: none; text-align: center; padding: 2rem;">
-                        <p>Generating image...</p>
-                    </div>
-                </div>
-                <h2 id="article-headline">Loading article...</h2>
-                <div id="article-meta">
-                    <p>
-                        <i class="fas fa-user fa-1x"></i> <span id="article-author">Loading...</span>
-                        <span id="article-date"></span>
-                    </p>
-                    <p id="article-category" class="sports-category">News</p>
-                </div>
-                <div id="article-summary"
-                    style="background-color: #E8F2F8; padding: 1rem; margin: 1rem 0; border-left: 3px solid #5B9BD5;">
-                    <h3 style="margin-bottom: 0.5rem; color: #5B9BD5;">Summary</h3>
-                    <p id="summary-text">Loading summary...</p>
-                </div>
-                <div id="article-body">
-                    <p>Loading article content...</p>
-                </div>
-                <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #E0E0E0;">
-                    <p><strong>Source:</strong> <span id="article-source"></span></p>
-                    <p><strong>Original Article:</strong> <a id="original-link" href="#" target="_blank">Read full
-                            article</a></p>
-                </div>
-            </article>
+    <!-- ARTICLE -->
+    <section class="container" style="max-width:900px;margin-top:3rem">
+        <article id="article-container">
+            <!-- Headlines with placeholders for faster First Contentful Paint -->
+            <h1 id="article-headline" style="color: #333; margin-bottom: 1rem;">Loading...</h1>
+            
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center;">
+                <p id="article-author" style="color: #666; font-size: 0.9rem; margin: 0;">Author</p>
+                <p id="article-date" style="color: #999; font-size: 0.9rem; margin: 0;">Date</p>
+                <span id="article-category" style="padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.85rem;">Category</span>
+            </div>
 
-            <article>
-                <h3>CATEGORIES</h3>
-                <ul>
-                    <li>Sports</li>
-                    <li>Entertainment</li>
-                    <li>Technology</li>
-                    <li>Business</li>
-                    <li>Politics</li>
-                </ul>
-            </article>
+            <p id="article-source" style="color: #666; font-size: 0.9rem; margin-bottom: 1rem;">Source</p>
+            
+            <a id="original-link" href="#" target="_blank" style="display: inline-block; margin-bottom: 1rem; color: #0066cc; text-decoration: none;">
+                Read Original Article →
+            </a>
 
-            <article>
-                <h3>JOIN OUR CLUB</h3>
-                <p>
-                    Stay updated with the latest news from Nepal Times.
-                </p>
-                <a href="#">Join Now</a>
-            </article>
-        </section>
-    </div>
+            <!-- Image container with progressive loading -->
+            <div id="article-image-container" style="margin: 2rem 0; text-align: center;">
+                <img id="article-image" src="/images/placeholder-blur.jpg" alt="Article image" style="max-width: 100%; height: auto; border-radius: 8px;" />
+                <div id="image-loader" style="display: none; text-align: center; padding: 2rem;">
+                    <div style="display: inline-block; width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #0066cc; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                </div>
+            </div>
 
+            <!-- Summary (AI-generated) -->
+            <div id="summary-box" style="background: #f0f4f8; padding: 1rem; border-left: 4px solid #0066cc; margin: 1rem 0; border-radius: 4px;">
+                <strong>Summary:</strong>
+                <p id="summary-text" style="margin: 0.5rem 0 0 0; color: #333;">Loading summary...</p>
+            </div>
+
+            <!-- Full article body -->
+            <div id="article-body" style="line-height: 1.8; color: #333; font-size: 1.1rem;">
+                <p>Loading article content...</p>
+            </div>
+        </article>
+    </section>
+
+    <!-- FOOTER -->
     <footer>
         <div class="container">
-            <div class="footer">
-                <article>
-                    <div class="logo">
-                        <i class="fas fa-globe fa-2x"></i>
-                        <h2>Nepal<span>Times</span></h2>
-                    </div>
-                    <p>
-                        Your trusted source for news from Nepal and around the world.
-                    </p>
-                </article>
-
-                <article>
-                    <h4>EMAIL NEWSLETTER</h4>
-                    <p>Get the latest news delivered to your inbox.</p>
-                    <input type="email" placeholder="Enter Email..." />
-                    <a href="#"> Subscribe</a>
-                </article>
-
-                <article>
-                    <h4>SITE LINKS</h4>
-                    <p>Help & Support</p>
-                    <p>Privacy Policy</p>
-                    <p>About Us</p>
-                    <p>Contact</p>
-                </article>
-
-                <article>
-                    <h4>JOIN OUR CLUB</h4>
-                    <p>
-                        Join our community and stay informed.
-                    </p>
-                    <a href="#">Join Now</a>
-                </article>
-            </div>
-
-            <div class="copyright">
-                <p>Copyright &copy; 2024, All Rights Reserved</p>
-            </div>
+            <p style="text-align:center">
+                © 2026 NewsGrid — Powered by Jina AI
+            </p>
         </div>
     </footer>
 
-    <script src="../js/article.js"></script>
+    <!-- Performance: Image loading animation styles -->
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+    <!-- Load article script -->
+    <script src="../js/article.js" defer></script>
 </body>
 
 </html>

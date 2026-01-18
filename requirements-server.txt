@@ -8,3 +8,7 @@ google-generativeai==0.3.2
 Pillow==10.1.0
 numpy==1.24.3
 
+# CRITICAL PINS
+newspaper3k==0.2.8
+lxml<5
+lxml_html_clean

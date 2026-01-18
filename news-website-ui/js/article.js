@@ -54,56 +54,71 @@ function generateSummary(text, maxSentences = 3) {
     return sentences.slice(0, maxSentences).join(' ').trim() || text.substring(0, 200) + '...';
 }
 
-// Generate image using Puter.js
-async function generateArticleImage(headline, description) {
-    const imageContainer = document.getElementById('article-image-container');
-    const imageLoader = document.getElementById('image-loader');
-    const articleImage = document.getElementById('article-image');
+// Progressive image loading - polls for AI-generated image
+let imagePollingInterval = null;
+let imagePollingAttempts = 0;
+const MAX_POLLING_ATTEMPTS = 120; // 6 minutes (30 polls * 12s)
+const POLLING_INTERVAL = 3000; // 3 seconds
+
+async function pollForFinalImage(articleURL) {
+    if (imagePollingAttempts >= MAX_POLLING_ATTEMPTS) {
+        console.log('Image polling timeout - keeping placeholder');
+        return;
+    }
     
     try {
-        // Show loader
-        articleImage.style.display = 'none';
-        imageLoader.style.display = 'block';
-        
-        // Create prompt for image generation
-        const prompt = `${headline}. ${description.substring(0, 200)}`;
-        
-        // Use Gemini 2.5 Flash Image Preview (Nano Banana) as requested
-        const generatedImg = await puter.ai.txt2img(prompt, { 
-            model: "gemini-2.5-flash-image-preview",
-            quality: "high"
+        // Re-fetch article to check if image has been generated
+        const encodedURL = btoa(articleURL).replace(/[+/=]/g, (m) => {
+            return {'+': '-', '/': '_', '=': ''}[m];
         });
         
-        // Hide loader
-        imageLoader.style.display = 'none';
+        const response = await fetch(`${API_BASE_URL}/article/${encodedURL}`);
+        const data = await response.json();
         
-        if (generatedImg) {
-            // Puter.js returns an img element or image data
-            if (generatedImg instanceof HTMLImageElement) {
-                // If it's an img element, use its src
-                articleImage.src = generatedImg.src;
-            } else if (typeof generatedImg === 'string') {
-                // If it's a URL string
-                articleImage.src = generatedImg;
-            } else if (generatedImg.src) {
-                // If it has a src property
-                articleImage.src = generatedImg.src;
+        if (data.success && data.article) {
+            const newImage = data.article.image_url;
+            const currentImage = document.getElementById('article-image').src;
+            
+            // Check if we got a real image (not placeholder)
+            if (newImage && 
+                !newImage.includes('placeholder') && 
+                newImage !== currentImage) {
+                console.log('✓ Real image received, updating...');
+                document.getElementById('article-image').src = newImage;
+                document.getElementById('article-image').alt = data.article.title;
+                
+                // Stop polling
+                if (imagePollingInterval) {
+                    clearInterval(imagePollingInterval);
+                    imagePollingInterval = null;
+                }
+                return;
             }
-            articleImage.style.display = 'block';
-            articleImage.alt = headline;
-        } else {
-            // Fallback to placeholder or original image
-            articleImage.style.display = 'block';
         }
     } catch (error) {
-        console.error('Error generating image:', error);
-        // Fallback: show original image or placeholder
-        articleImage.style.display = 'block';
-        imageLoader.style.display = 'none';
+        console.error('Error polling for image:', error);
     }
+    
+    imagePollingAttempts++;
 }
 
-// Load and display article
+function setupProgressiveImagePolling(articleURL) {
+    // Show loader while polling
+    const imageLoader = document.getElementById('image-loader');
+    if (imageLoader) {
+        imageLoader.style.display = 'block';
+    }
+    
+    // Start polling for real image
+    imagePollingInterval = setInterval(() => {
+        pollForFinalImage(articleURL);
+    }, POLLING_INTERVAL);
+    
+    // Also poll immediately
+    pollForFinalImage(articleURL);
+}
+
+// Load and display article (optimized for <200ms TTFB)
 async function loadArticle() {
     const articleURL = getArticleURLFromParams();
     
@@ -114,23 +129,25 @@ async function loadArticle() {
     }
     
     try {
-        // Encode URL for API call (base64)
-        const encodedURL = btoa(articleURL).replace(/[+/=]/g, (m) => {
-            return {'+': '-', '/': '_', '=': ''}[m];
-        });
+        const startTime = performance.now();
         
-        // Fetch article from API
-        const response = await fetch(`${API_BASE_URL}/article/${encodedURL}`);
+        // Fetch article from optimized API endpoint
+        const response = await fetch(`${API_BASE_URL}/article?url=${encodeURIComponent(articleURL)}`);
         const data = await response.json();
+        const fetchTime = performance.now() - startTime;
+        
+        console.log(`✓ Article fetched in ${fetchTime.toFixed(1)}ms`);
         
         if (data.success && data.article) {
             const article = data.article;
             
             // Update headline
-            document.getElementById('article-headline').textContent = article.headline || 'No headline';
+            document.getElementById('article-headline').textContent = article.title || 'No headline';
             
             // Update meta information
-            const author = Array.isArray(article.author) ? article.author.join(', ') : (article.author || 'Unknown');
+            const author = Array.isArray(article.author) 
+                ? article.author.join(', ') 
+                : (article.author || 'Unknown');
             document.getElementById('article-author').textContent = `Written By ${author}`;
             
             if (article.date_publish) {
@@ -148,27 +165,34 @@ async function loadArticle() {
             document.getElementById('article-source').textContent = article.source || 'Unknown';
             document.getElementById('original-link').href = article.url || '#';
             
-            // Generate and display summary
-            const fullText = article.article || article.description || '';
-            const summary = generateSummary(fullText, 4);
-            document.getElementById('summary-text').textContent = summary;
+            // Display summary (AI-generated)
+            document.getElementById('summary-text').textContent = article.summary || 'Summary not available';
             
-            // Display article body (use description if full article not available)
+            // Display article body
             const articleBody = document.getElementById('article-body');
-            if (article.article && article.article.length > 200) {
+            if (article.content && article.content.length > 200) {
                 // Split into paragraphs
-                const paragraphs = article.article.split('\n\n').filter(p => p.trim());
+                const paragraphs = article.content.split('\n\n').filter(p => p.trim());
                 articleBody.innerHTML = paragraphs.map(p => `<p>${p.trim()}</p>`).join('');
             } else {
-                // Use description as body
-                articleBody.innerHTML = `<p>${article.description || article.summary || 'Content not available.'}</p>`;
+                // Use description as fallback
+                articleBody.innerHTML = `<p>${article.summary || 'Content not available.'}</p>`;
             }
             
-            // Generate image using Puter.js
-            await generateArticleImage(article.headline, article.description || article.summary || '');
+            // Display image (placeholder + progressive loading)
+            const articleImage = document.getElementById('article-image');
+            if (article.image_url) {
+                articleImage.src = article.image_url;
+                articleImage.alt = article.title;
+            } else {
+                articleImage.src = '/images/placeholder-blur.jpg';
+            }
+            
+            // Setup progressive image polling for AI-generated image updates
+            setupProgressiveImagePolling(articleURL);
             
             // Update page title
-            document.title = `${article.headline} | Nepal Times`;
+            document.title = `${article.title} | Nepal Times`;
             
         } else {
             document.getElementById('article-headline').textContent = 'Article not found';
